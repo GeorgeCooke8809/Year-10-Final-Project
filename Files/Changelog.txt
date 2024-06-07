@@ -1,25 +1,28 @@
-0.1.0 - UNNAMED - 24/05/2024 @ 14:00
+Total Time In (hh:mm): 06:19
+
+
+0.1.0 - UNNAMED - 24/05/2024 @ 14:00 - Time In: 1:00
 - Import database
 - Pick random song,
 
 
-0.1.1 - Minimum Viable Product - 26/05/2024 @ 18:33
+0.1.1 - Minimum Viable Product - 26/05/2024 @ 18:33 - Time In: ~00:45
 - Constant play loop,
 - Put first letters into one string,
 - Mark songs correct or incorrect,
 - Manage session score,
 
 
-0.2.0 - GUI Overhaul - 26/05/2024 @ 22:00
+0.2.0 - GUI Overhaul - 26/05/2024 @ 22:00 - Time In: ~1:15
 - Added GUI,
 - Added sound effects for correct guesses,
 
 
-0.2.1 - User Data - 27/05/2024 @ 15:40
+0.2.1 - User Data - 27/05/2024 @ 15:40 - Time In: ~1:30
 - Added login page and create account,
 - Added saving total score and high session score,
 
-0.2.2 - Workflow Improvements - 27/05/2024 @ 16:41
+0.2.2 - Workflow Improvements - 27/05/2024 @ 16:41 - Time In: ~00:20
 - Made adding new songs easier and quicker,
 - Added 10 new songs (for a total of 20),
 	- I Was Made Fo Lovin' You by KISS
@@ -34,3 +37,9 @@
 	- I'm So Tired by Fugazi (Punctuation Matters)
 - Fixed bug where extra blank space was added to each word (i.e "It" was shown as "I _ _" not "I _"),
 - Fixed bug where it wouldn't save high scores when just created account,
+
+
+0.3.0 - Online (Not Really) Leaderboards - 27/05/2024 @ 18:10 Time In: 1:29
+- Added menu bar at top,
+- Added show leaderboard for top 5 all time scores in menu,
+- Added show leaderboard for top 5 session scores in menu,
