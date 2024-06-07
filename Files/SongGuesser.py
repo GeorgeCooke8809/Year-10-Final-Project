@@ -53,7 +53,7 @@ def login_attempt():
     
         
 def create_account():
-    global username, password
+    global username, password, signed_in
     
     username = username_enter.get()
     password = password_enter.get()
@@ -204,6 +204,46 @@ def play():
     all_time_label_table.pack_forget()
 
 def all_time_lead():
+    user_cursor.execute("SELECT Username FROM Users ORDER BY AllTimeScore DESC LIMIT 5")
+    top_5_all_name = user_cursor.fetchall()
+    user_cursor.execute("SELECT AllTimeScore FROM Users ORDER BY AllTimeScore DESC LIMIT 5")
+    top_5_all_score = user_cursor.fetchall()    
+
+    number_one = Label(all_time_table, text = "1st", font = ("Cambria", 15, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    number_one.grid(row = 0, column = 0, sticky = W+E+N+S)
+    name_one = Label(all_time_table, text = top_5_all_name[0], font = ("Cambria", 15, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    name_one.grid(row = 0, column = 1, sticky = W+E+N+S)
+    score_one = Label(all_time_table, text = top_5_all_score[0], font = ("Cambria", 15, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    score_one.grid(row = 0, column = 2, sticky = W+E+N+S)
+
+    number_two = Label(all_time_table, text = "2nd", font = ("Cambria", 15, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    number_two.grid(row = 1, column = 0, sticky = W+E+N+S)
+    name_two = Label(all_time_table, text = top_5_all_name[1], font = ("Cambria", 15, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    name_two.grid(row = 1, column = 1, sticky = W+E+N+S)
+    score_two = Label(all_time_table, text = top_5_all_score[1], font = ("Cambria", 15, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    score_two.grid(row = 1, column = 2, sticky = W+E+N+S)
+
+    number_three = Label(all_time_table, text = "3rd", font = ("Cambria", 15, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    number_three.grid(row = 2, column = 0, sticky = W+E+N+S)
+    name_three = Label(all_time_table, text = top_5_all_name[2], font = ("Cambria", 15, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    name_three.grid(row = 2, column = 1, sticky = W+E+N+S)
+    score_three = Label(all_time_table, text = top_5_all_score[2], font = ("Cambria", 15, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    score_three.grid(row = 2, column = 2, sticky = W+E+N+S)
+
+    number_four = Label(all_time_table, text = "4th", font = ("Cambria", 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    number_four.grid(row = 3, column = 0, sticky = W+E+N+S)
+    name_four = Label(all_time_table, text = top_5_all_name[3], font = ("Cambria", 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    name_four.grid(row = 3, column = 1, sticky = W+E+N+S)
+    score_four = Label(all_time_table, text = top_5_all_score[3], font = ("Cambria", 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    score_four.grid(row = 3, column = 2, sticky = W+E+N+S)
+
+    number_five = Label(all_time_table, text = "5th", font = ("Cambria", 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    number_five.grid(row = 4, column = 0, sticky = W+E+N+S)
+    name_five = Label(all_time_table, text = top_5_all_name[4], font = ("Cambria", 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    name_five.grid(row = 4, column = 1, sticky = W+E+N+S)
+    score_five = Label(all_time_table, text = top_5_all_score[4], font = ("Cambria", 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    score_five.grid(row = 4, column = 2, sticky = W+E+N+S)    
+
     all_time_label_table.pack()
     all_time_table.pack(fill = "x", expand = True, pady = 10,  anchor="nw")
     session_table.pack_forget()
@@ -212,6 +252,47 @@ def all_time_lead():
     session_label_table.pack_forget()
 
 def session_lead():
+    user_cursor.execute("SELECT Username FROM Users ORDER BY TopSessionScore DESC LIMIT 5")
+    top_5_session_names = user_cursor.fetchall()
+    user_cursor.execute("SELECT TopSessionScore FROM Users ORDER BY TopSessionScore DESC LIMIT 5")
+    top_5_session_score = user_cursor.fetchall()
+
+
+    number_one = Label(session_table, text = "1st", font = ("Cambria", 15, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    number_one.grid(row = 0, column = 0, sticky = W+E+N+S)
+    name_one = Label(session_table, text = top_5_session_names[0], font = ("Cambria", 15, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    name_one.grid(row = 0, column = 1, sticky = W+E+N+S)
+    score_one = Label(session_table, text = top_5_session_score[0], font = ("Cambria", 15, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    score_one.grid(row = 0, column = 2, sticky = W+E+N+S)
+
+    number_two = Label(session_table, text = "2nd", font = ("Cambria", 15, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    number_two.grid(row = 1, column = 0, sticky = W+E+N+S)
+    name_two = Label(session_table, text = top_5_session_names[1], font = ("Cambria", 15, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    name_two.grid(row = 1, column = 1, sticky = W+E+N+S)
+    score_two = Label(session_table, text = top_5_session_score[1], font = ("Cambria", 15, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    score_two.grid(row = 1, column = 2, sticky = W+E+N+S)
+
+    number_three = Label(session_table, text = "3rd", font = ("Cambria", 15, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    number_three.grid(row = 2, column = 0, sticky = W+E+N+S)
+    name_three = Label(session_table, text = top_5_session_names[2], font = ("Cambria", 15, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    name_three.grid(row = 2, column = 1, sticky = W+E+N+S)
+    score_three = Label(session_table, text = top_5_session_score[2], font = ("Cambria", 15, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    score_three.grid(row = 2, column = 2, sticky = W+E+N+S)
+
+    number_four = Label(session_table, text = "4th", font = ("Cambria", 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    number_four.grid(row = 3, column = 0, sticky = W+E+N+S)
+    name_four = Label(session_table, text = top_5_session_score[3], font = ("Cambria", 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    name_four.grid(row = 3, column = 1, sticky = W+E+N+S)
+    score_four = Label(session_table, text = top_5_all_score[3], font = ("Cambria", 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    score_four.grid(row = 3, column = 2, sticky = W+E+N+S)
+
+    number_five = Label(session_table, text = "5th", font = ("Cambria", 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    number_five.grid(row = 4, column = 0, sticky = W+E+N+S)
+    name_five = Label(session_table, text = top_5_all_name[4], font = ("Cambria", 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    name_five.grid(row = 4, column = 1, sticky = W+E+N+S)
+    score_five = Label(session_table, text = top_5_session_score[4], font = ("Cambria", 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    score_five.grid(row = 4, column = 2, sticky = W+E+N+S)    
+
     session_label_table.pack()
     session_table.pack(fill = "x", expand = True, pady = 10,  anchor="nw")
     all_time_table.pack_forget()
