@@ -8,6 +8,8 @@ import random
 #Playing check
 playing = True
 
+points = 0
+
 
 
 #Imports
@@ -29,24 +31,53 @@ artists = cursor.fetchall()
 
 
 #Pick Random song
-def pick():
-    cursor.execute("SELECT COUNT(*) FROM Songs")
-    item_count = int(cursor.fetchone()[0])
+cursor.execute("SELECT COUNT(*) FROM Songs")
+item_count = int(cursor.fetchone()[0])
 
+while playing == True:   
+# DEBUG -- print(item_count)
+
+    song_choice = random.randint(1,item_count)
+
+# DEBUG -- print(song_choice)
     
-    # DEBUG -- print(item_count)
+    cursor.execute("SELECT Title FROM Songs WHERE ID =:c", {"c": song_choice})
+    song = cursor.fetchone()[0]
 
-    song_choice = random.randint(0,item_count)
-
-    # DEBUG -- print(song_choice)
-
-    song = songs[song_choice]
-    #cursor.execute("SELECT Title FROM Songs WHERE ID = song_choice")
-    #song = cursor.fetchone()
-
-    # DEBUG --
-    print(song)
-
-
+# DEBUG -- print(song)
     
-pick()
+    cursor.execute("SELECT Artist FROM Songs WHERE ID =:c", {"c": song_choice})
+    artist = cursor.fetchone()[0]
+
+# DEBUG -- print(artist)
+
+
+    string = ""
+    word = 0
+
+    song_letters = song.split(" ")
+
+    for words in song_letters:
+    
+    # DEBUG -- print(words)
+    
+        letter = words[0]
+        word = word + 1
+        string = string + letter + "_____ "
+
+    print(string)
+    print(artist)
+
+    correct = False
+
+    for guess in range(1,3):
+        if correct == False:
+            choice = input("Guess: ")
+            if choice.upper() == song.upper():
+                print("That Is Correct! Well Done!")
+                points = points + (4-guess)
+                print("Session Points: " + str(points))
+                correct = True
+            else:
+                print("That's wrong, try again.")
+            print()
