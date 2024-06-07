@@ -69,6 +69,8 @@ def create_account():
             user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, "0", "0"))
     
             users.commit()
+            
+            signed_in = True
         
             login.destroy()
             
@@ -137,16 +139,26 @@ def pick_song():
 
 # DEBUG -- print(song_choice)
     
-    cursor.execute("SELECT Title FROM Songs WHERE ID =:c", {"c": song_choice})
+    cursor.execute("SELECT Title FROM Songs WHERE rowid =:c", {"c": song_choice})
     song = cursor.fetchone()[0]
 
 # DEBUG -- print(song)
     
-    cursor.execute("SELECT Artist FROM Songs WHERE ID =:c", {"c": song_choice})
+    cursor.execute("SELECT Artist FROM Songs WHERE rowid =:c", {"c": song_choice})
     artist = cursor.fetchone()[0]
     
-    cursor.execute("SELECT Blanks FROM Songs WHERE ID =:c", {"c": song_choice})
-    string = cursor.fetchone()[0]
+    #assemble string with only first letters
+    words = song.split()
+    # DEBUG -- print(words)
+    string = ""
+    for word in words:
+        letter = word[0]
+        letters = len(word)
+        # DEBUG -- print(letters)
+        for x in range(1,letters):
+            letter = letter + " _"
+        string = string + letter + "  "
+        # DEBUG -- print(string)
 
 # DEBUG -- print(artist)
 
