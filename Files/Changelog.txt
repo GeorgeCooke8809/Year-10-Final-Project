@@ -18,3 +18,19 @@
 0.2.1 - User Data - 27/05/2024 @ 15:40
 - Added login page and create account,
 - Added saving total score and high session score,
+
+0.2.2 - Workflow Improvements - 27/05/2024 @ 16:41
+- Made adding new songs easier and quicker,
+- Added 10 new songs (for a total of 20),
+	- I Was Made Fo Lovin' You by KISS
+	- Iris by The Goo Goo Dolls
+	- Something Just Like This by The Chainsmokers
+	- End of Beginning by Djo
+	- Notion by The Rare Occasions
+	- Somewhere Only We Know by Keane
+	- Hey Jude by The Beatles
+	- Video Games by Lana Del Rey
+	- Intro by The xx
+	- I'm So Tired by Fugazi (Punctuation Matters)
+- Fixed bug where extra blank space was added to each word (i.e "It" was shown as "I _ _" not "I _"),
+- Fixed bug where it wouldn't save high scores when just created account,
