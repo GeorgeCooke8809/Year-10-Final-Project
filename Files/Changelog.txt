@@ -1,0 +1,20 @@
+0.1.0 - UNNAMED - 24/05/2024 @ 14:00
+- Import database
+- Pick random song,
+
+
+0.1.1 - Minimum Viable Product - 26/05/2024 @ 18:33
+- Constant play loop,
+- Put first letters into one string,
+- Mark songs correct or incorrect,
+- Manage session score,
+
+
+0.2.0 - GUI Overhaul - 26/05/2024 @ 22:00
+- Added GUI,
+- Added sound effects for correct guesses,
+
+
+0.2.1 - User Data - 27/05/2024 @ 15:40
+- Added login page and create account,
+- Added saving total score and high session score,
