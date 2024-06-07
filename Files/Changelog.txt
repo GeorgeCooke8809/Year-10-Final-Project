@@ -1,4 +1,4 @@
-Total Time In (hh:mm): 06:19
+Total Time In (hh:mm): 06:34
 
 
 0.1.0 - UNNAMED - 24/05/2024 @ 14:00 - Time In: 1:00
@@ -39,7 +39,9 @@ Total Time In (hh:mm): 06:19
 - Fixed bug where it wouldn't save high scores when just created account,
 
 
-0.3.0 - Online (Not Really) Leaderboards - 27/05/2024 @ 18:10 Time In: 1:29
+0.3.0 - Online (Not Really) Leaderboards - 27/05/2024 @ 18:10 - Time In: 1:29
 - Added menu bar at top,
 - Added show leaderboard for top 5 all time scores in menu,
 - Added show leaderboard for top 5 session scores in menu,
+
+0.3.1 - Minor Bug fix - 07/06/2024 @ 19:35 - Time In: 00:15
