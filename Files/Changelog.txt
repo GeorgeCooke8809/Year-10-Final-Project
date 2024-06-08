@@ -1,4 +1,4 @@
-Total Time In (hh:mm): 06:34
+Total Time In (hh:mm): 10:05
 
 
 0.1.0 - UNNAMED - 24/05/2024 @ 14:00 - Time In: 1:00
@@ -48,7 +48,18 @@ Total Time In (hh:mm): 06:34
 - Fixed bug where scores wouldn't be recorded when account created,
 - Fixed bug where leaderboards wouldn't update until relaunch,
 
-0.4.0 - Audio Update - 08/06/2024 @  - Time In: 
+0.4.0 - Audio Update - 08/06/2024 @ 11:45  - Time In: 00:40
 - Fixed spelling of "Starboy" by The Weeknd,
 - Added playing clips from songs when guessing,
 - Added playing incorrect sound effect,
+
+0.4.1 - GUI Overhaul - 06/06/2024 @  - Time In: 3:30
+- Made app show album cover when guessing,
+- Made min size for window so text not compacted and unreadable,
+- Made sign in window non resizable,
+- Made new create new account page,
+- Changed fonts,
+- Made enter button submit guess,
+- Changed colours,
+- Fixed bug where too many guesses were granted,
+- Added showing correct song after 3 incorrect tries,
