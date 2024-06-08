@@ -25,7 +25,7 @@ Total Time In (hh:mm): 06:34
 0.2.2 - Workflow Improvements - 27/05/2024 @ 16:41 - Time In: ~00:20
 - Made adding new songs easier and quicker,
 - Added 10 new songs (for a total of 20),
-	- I Was Made Fo Lovin' You by KISS
+	- I Was Made For Lovin' You by KISS
 	- Iris by The Goo Goo Dolls
 	- Something Just Like This by The Chainsmokers
 	- End of Beginning by Djo
@@ -45,3 +45,8 @@ Total Time In (hh:mm): 06:34
 - Added show leaderboard for top 5 session scores in menu,
 
 0.3.1 - Minor Bug fix - 07/06/2024 @ 19:35 - Time In: 00:15
+- Fixed bug where scores wouldn't be recorded when account created,
+- Fixed bug where leaderboards wouldn't update until relaunch,
+
+0.4.0 - Audio Update - 08/06/2024 @  - Time In: 
+- Fixed spelling of "Starboy" by The Weeknd,
