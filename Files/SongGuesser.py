@@ -3,6 +3,9 @@ import sqlite3
 from tkinter import *
 import random
 import pygame
+from PIL import ImageTk, Image
+
+
 pygame.init()
 
 #Fonts:
@@ -168,24 +171,21 @@ def pick_song():
     #print(string)
     #print(artist)  
 
-    user = Label(top_table, text = username, font = ("Cambria", 15, "italic"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
+    user = Label(title, text = username, font = ("Cambria", 15, "italic"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left")
     user.grid(row = 0, column = 0, sticky = W+E+N+S)
     
-    total = Label(top_table, text = total_points, font = ("Cambria", 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    total = Label(title, text = total_points, font = ("Cambria", 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
     total.grid(row = 0, column = 1, sticky = W+E+N+S)
     
-    row_points = Label(top_table, text = points, font = ("Cambria", 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
+    row_points = Label(title, text = points, font = ("Cambria", 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right")
     row_points.grid(row = 0, column = 2, sticky = W+E+N+S)
 
-    row_1 = Label(frame, text = string, font = ("Cambria", 25, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify="left")
-    row_1.grid(row = 0, column = 0, sticky = W+E+N+S)
+    row_1 = Label(title, text = string, font = ("Cambria", 25, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify="left")
+    row_1.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
     
-    row_2 = Label(frame, text = artist, font = ("Century", 15), anchor = "w", padx = 10,wrap=True, wraplength=505, justify="left")
-    row_2.grid(row = 1, column = 0, sticky = W+E+N+S)
+    row_2 = Label(title, text = artist, font = ("Century", 15), anchor = "w", padx = 10,wrap=True, wraplength=505, justify="left")
+    row_2.grid(row = 2, column = 1, columnspan = 2, sticky = W+E+N+S)
     
-
-    top_table.pack(fill = "x", expand = True, pady = 10,  anchor="w")
-    frame.pack(fill = "x", expand = True, pady = 10,  anchor="w")
     
     root.resizable(width = True, height = True)
             
@@ -193,6 +193,16 @@ def pick_song():
     path = "Songs/" + str(song_choice) + "/Aud.mp3"
     song_play = pygame.mixer.Sound(path)
     song_play.play()
+    
+    cover_path = "Songs/" + str(song_choice) + "/Cvr.png"
+    cover = Image.open(cover_path).resize((100,100))
+    image_cover = ImageTk.PhotoImage(cover)
+    ins_cover = Label(title, image = image_cover, pady = 10)
+    
+    ins_cover.image = image_cover
+
+    ins_cover.grid(row = 1, rowspan = 2, column = 0, sticky = "nesw")
+    title.pack(fill = "both", expand = True, pady = 10,  anchor="w")
     return(song)
 
 #Playing check
@@ -201,8 +211,7 @@ playing = True
 points = 0
 
 def play():
-    top_table.pack(fill = "x", expand = True, pady = 10,  anchor="w")
-    frame.pack()
+    title.pack(fill = "both", expand = True, pady = 10,  anchor="w")
     all_time_table.pack_forget()
     session_table.pack_forget()
     session_label_table.pack_forget()
@@ -252,8 +261,7 @@ def all_time_lead():
     all_time_label_table.pack()
     all_time_table.pack(fill = "x", expand = True, pady = 10,  anchor="nw")
     session_table.pack_forget()
-    frame.pack_forget()
-    top_table.pack_forget()
+    title.pack_forget()
     session_label_table.pack_forget()
 
 def session_lead():
@@ -301,13 +309,12 @@ def session_lead():
     session_label_table.pack()
     session_table.pack(fill = "x", expand = True, pady = 10,  anchor="nw")
     all_time_table.pack_forget()
-    frame.pack_forget()
-    top_table.pack_forget()
+    title.pack_forget()
     all_time_label_table.pack_forget()
 
 #Window
 root = Tk()
-root.geometry("525x210")
+root.geometry("750x250")
 root.title("Song Guesser - Version 0.4.0 - 08/06/2024")
 
 #Menu
@@ -325,19 +332,16 @@ leaderboard_menus.add_command(label = "Session Scores", command = session_lead)
 
 
 #Frame
-frame = Frame(root, width = 525, height = 190)
-frame.rowconfigure(0, weight = 1)
-frame.rowconfigure(1, weight = 1)
-frame.rowconfigure(2, weight = 1)
-frame.rowconfigure(3, weight = 1)
+title = Frame(root, width = 750, height = 190)
+title.rowconfigure(0, weight = 1)
+title.rowconfigure(1, weight = 1)
+title.rowconfigure(2, weight = 1)
+title.rowconfigure(3, weight = 1)
+title.rowconfigure(4, weight = 1)
 
-#Top Table
-top_table = Frame(root, width = 525, height = 20)
-top_table.rowconfigure(0, weight = 1)
-top_table.columnconfigure(0, weight = 5)
-top_table.columnconfigure(1, weight = 1)
-top_table.columnconfigure(2, weight = 1)
-
+title.columnconfigure(0, weight = 1)
+title.columnconfigure(1, weight = 5)
+title.columnconfigure(2, weight = 1)
 
 
 #Top 5 All Time Table
@@ -531,14 +535,14 @@ while playing == True:
             
     song = pick_song()
     
-    box = Entry(frame, font = ("Cambria", 22), width = 33, justify = "center")
-    box.grid(row = 2, column = 0, sticky = W+E+N+S)
+    box = Entry(title, font = ("Cambria", 22), width = 33, justify = "center")
+    box.grid(row = 3, columnspan = 3, sticky = W+E+N+S)
     
-    submit_btn = Button(frame, text = "Submit Guess", command = submit, font = ("Cambria", 15), anchor = "center", justify = "center")
-    submit_btn.grid(row = 3, column = 0, sticky = W+E+N+S)
+    submit_btn = Button(title, text = "Submit Guess", command = submit, font = ("Cambria", 15), anchor = "center", justify = "center")
+    submit_btn.grid(row = 4, columnspan = 3, sticky = W+E+N+S)
 
     
-    frame.pack()
+    title.pack()
     root.mainloop()
 
             
