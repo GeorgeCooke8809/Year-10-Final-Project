@@ -186,11 +186,8 @@ def pick_song():
     row_1 = Label(title, text = string, font = ("Cambria", 25, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify="left")
     row_1.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
     
-    row_2 = Label(title, text = artist, font = ("Century", 15), anchor = "nw", padx = 10,wrap=True, wraplength=505)
+    row_2 = Label(title, text = (artist + "                              "), font = ("Century", 15), anchor = "nw", padx = 10,wrap=True, wraplength=505)
     row_2.grid(row = 2, column = 1, columnspan = 2, sticky = N+W)
-    
-    
-    root.resizable(width = True, height = True)
             
 
     path = "Songs/" + str(song_choice) + "/Aud.mp3"
@@ -205,6 +202,7 @@ def pick_song():
     ins_cover.image = image_cover
 
     ins_cover.grid(row = 1, rowspan = 2, column = 0, sticky = "nesw")
+    title.pack_forget()
     title.pack(fill = "both", expand = True, pady = 10,  anchor="w")
     return(song)
 
