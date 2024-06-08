@@ -308,7 +308,7 @@ def session_lead():
 #Window
 root = Tk()
 root.geometry("525x210")
-root.title("Song Guesser - Version 0.3.0 - 27/05/2024")
+root.title("Song Guesser - Version 0.4.0 - 08/06/2024")
 
 #Menu
 my_menu = Menu(root)
