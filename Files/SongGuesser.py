@@ -1,7 +1,9 @@
 #Imports
 import sqlite3
+from sys import maxsize
 from tkinter import *
 import random
+from turtle import width
 import pygame
 from PIL import ImageTk, Image
 
@@ -94,6 +96,7 @@ def create_account():
 #Make Login Window
 login = Tk()
 login.geometry("300x480")
+login.resizable(height = False, width = False)
 login.title("Login")
 
 #Make login frame / table
@@ -183,8 +186,8 @@ def pick_song():
     row_1 = Label(title, text = string, font = ("Cambria", 25, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify="left")
     row_1.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
     
-    row_2 = Label(title, text = artist, font = ("Century", 15), anchor = "w", padx = 10,wrap=True, wraplength=505, justify="left")
-    row_2.grid(row = 2, column = 1, columnspan = 2, sticky = W+E+N+S)
+    row_2 = Label(title, text = artist, font = ("Century", 15), anchor = "nw", padx = 10,wrap=True, wraplength=505)
+    row_2.grid(row = 2, column = 1, columnspan = 2, sticky = N+W)
     
     
     root.resizable(width = True, height = True)
@@ -315,7 +318,8 @@ def session_lead():
 #Window
 root = Tk()
 root.geometry("750x250")
-root.title("Song Guesser - Version 0.4.0 - 08/06/2024")
+root.title("Song Guesser - Version 0.4.1 - 08/06/2024")
+root.minsize(width = 750, height = 250)
 
 #Menu
 my_menu = Menu(root)
@@ -340,12 +344,12 @@ title.rowconfigure(3, weight = 1)
 title.rowconfigure(4, weight = 1)
 
 title.columnconfigure(0, weight = 1)
-title.columnconfigure(1, weight = 5)
-title.columnconfigure(2, weight = 1)
+title.columnconfigure(1, weight = 1000)
+title.columnconfigure(2, weight = 200)
 
 
 #Top 5 All Time Table
-all_time_table = Frame(root, width = 500)
+all_time_table = Frame(root, width = 750)
 all_time_table.rowconfigure(0, weight = 1)
 all_time_table.rowconfigure(1, weight = 1)
 all_time_table.rowconfigure(2, weight = 1)
