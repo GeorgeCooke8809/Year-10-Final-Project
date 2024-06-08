@@ -1,1 +1,0 @@
-All finished versions can be downloaded from the releases tab or you can go back to their branches. Changelogs / patch notes are available in release descripotions and are in fils downloaded when downloading source files.
