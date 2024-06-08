@@ -130,7 +130,7 @@ def create_account_window():
     create_f.rowconfigure(6, weight = 1)
     create_f.rowconfigure(7, weight = 500, minsize = 50)
 
-    login_text = Label(create_f, text = "Sign In", font = (Font_1, 35, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+    login_text = Label(create_f, text = "Sign Up", font = (Font_1, 35, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
     login_text.grid(row = 0, column = 0, sticky = W+E+N+S,pady = "10")
     username_text = Label(create_f, text = "Username:", font = (Font_2, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
     username_text.grid(row = 1, column = 0, sticky = W+E+N+S, pady = "10")
@@ -144,29 +144,18 @@ def create_account_window():
     fail_text.config(fg = "red")
     fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
     
-    button_border = tkinter.Frame(create_f,
-                              highlightbackground = Contrast,
-                              highlightthickness = 5,
-                              width = 50,
-                              bg = "White",
-                              height = 20,
-                              )
-    new_account = Button(button_border, 
-                        text = "Create Account", 
+    create_account_submit = Button(create_f,
+                        text = "Sign Up", 
                         command = create_new_account, 
                         font = (Font_2, 17), 
-                        pady = "10",
-                        bg = "White",
-                        fg = Contrast,
-                        highlightthickness = 1,
-                        highlightbackground = Contrast_Light,
-                        border = 0,
-                        cursor = "hand2",
-                        width = 18,
+                        background = Contrast,
+                        fg = "White",
                         activebackground = Contrast_Light,
+                        pady = "10",
+                        border = 0,
+                        cursor = "hand2"
                         )
-    new_account.pack(anchor = "center")
-    button_border.grid(row = 6, column = 0, sticky = W+E+N+S, pady = "10")
+    create_account_submit.grid(row = 6, column = 0, sticky = W+E+N+S, pady = "10")
 
     create_f.pack(fill = "y", expand = True)
     create_account.mainloop()
