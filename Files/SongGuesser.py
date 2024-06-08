@@ -129,9 +129,12 @@ login.mainloop()
 
 
 correct = pygame.mixer.Sound('Correct.mp3')
+incorrect = pygame.mixer.Sound('Incorrect.mp3')
+
+path = ""
 
 def pick_song():
-    global username, total_points
+    global username, total_points, path, song_play
     
     cursor.execute("SELECT COUNT(*) FROM Songs")
     item_count = int(cursor.fetchone()[0]) 
@@ -187,7 +190,9 @@ def pick_song():
     root.resizable(width = True, height = True)
             
 
-    
+    path = "Songs/" + str(song_choice) + "/Aud.mp3"
+    song_play = pygame.mixer.Sound(path)
+    song_play.play()
     return(song)
 
 #Playing check
@@ -511,11 +516,17 @@ while playing == True:
                     users.commit()
 
                 #print("Session Points: " + str(points))
+                song_play.stop()
                 song = pick_song()
                 guess = 0
+            else:
+                incorrect.play()
+                song_play.stop()
+                song_play.play()
             
         else:
             guess = 0
+            song_play.stop()
             song = pick_song()
             
     song = pick_song()
