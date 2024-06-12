@@ -1,27 +1,15 @@
 #Imports
 import sqlite3
-from sys import maxsize
-from textwrap import fill
 from tkinter import *
 import random
 import tkinter
-from turtle import width
-from venv import create
 import pygame
 from PIL import ImageTk, Image
-import time
 
+#Star pygame (used for sound)
 pygame.init()
 
-#GUI Customisation:
-#Fonts:
-#Originals: "Cambria" (1), "Century"(2)
-
-#Shortlist
-#Monoton
-#Lato (2)
-#Tw Cen MT (2)
-
+#Set Variables for fonts and colours so changable in future updates
 Font_1 = "Monoton"
 Font_2 = "Tw Cen MT"
 
@@ -29,33 +17,29 @@ Background = "White"
 Contrast = "#01104d"
 Contrast_Light = "#bfd2ff"
 
-
-
-
+#Sets variables to default incase user logs in as a guest
 signed_in = False
 username = "Guest"
 total_points = 0
 top_session_points = 0
 
+#Readies SQL for user data
 users = sqlite3.connect("Users.db")
 user_cursor = users.cursor()
 
-def login_attempt():
+def login_attempt(): # Function for when login button is pressed
     global signed_in, username, total_points, top_session_points, password
     username = username_enter_login.get()
     password = password_enter_login.get()
     
-    # DEBUG -- print(password)
-    if username != "":
+    if username != "": # Checks user entered a username
         user_cursor.execute("SELECT Password FROM Users WHERE Username = ?", (username,))
         correct_password = user_cursor.fetchone()
-        # DEBUG -- print(correct_password)
-        if correct_password != None:
+        
+        if correct_password != None: # Makes correct password to be compared to entered password only if entered username is valid
             correct_password = correct_password[0]
     
-    # DEBUG -- print(correct_password)
-    
-        if str(password) == str(correct_password):
+        if str(password) == str(correct_password): # Checks password is correct
             user_cursor.execute("SELECT AllTimeScore FROM Users WHERE Username = ?", (username,))
             total_points = user_cursor.fetchone()[0]
 
@@ -64,56 +48,47 @@ def login_attempt():
 
             signed_in = True
             login.destroy()
-            # DEBUG -- print("Correct")
         
-        else:
+        else: # Fail text for if username or password wrong
             fail_text = Label(login_f, text = "Your username or password are not correct.\nPlease try again.", font = (Font_2, 10, "italic"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
             fail_text.config(fg = "red")
             fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
 
-            login_f.pack()
-            #DEBUG -- print("Incorrect")
-    
+            login_f.pack(fill = "y", expand = True)
 
-def create_new_account():
-    print("HGF")
+def create_new_account(): # Function for making create new account
     global username, password, signed_in, create_f, username_enter, password_enter, create_account
     
     username = username_enter.get()
     password = password_enter.get()
     
-    print(username)
-    print(password)
-    
     user_cursor.execute("SELECT Password FROM Users WHERE Username = ?", (username,))
     correct_password = user_cursor.fetchone()
     
-    print(correct_password)
-    
-    if correct_password == None:
+    if correct_password == None: # Checks username not already in use
         
-        if password != "":
+        if password != "": # Checks password was entered
             user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, "0", "0"))
     
             users.commit()
         
             create_account.destroy()
             
-        else:
+        else: # Fail message for if password not entered
             fail_text = Label(create_f, text = "Please enter a password.\n", font = (Font_2, 10, "italic"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
             fail_text.config(fg = "red")
             fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
 
             create_f.pack()
             
-    else:
+    else: # Fail message for if username in use
         fail_text = Label(create_f, text = "That username already exists.\nPlease try again.", font = (Font_2, 10, "italic"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
         fail_text.config(fg = "red")
         fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
 
         create_f.pack()
        
-def create_account_window():   
+def create_account_window():   # Function for making new account window
     global create_f, username_enter, password_enter, create_account    
 
     create_account =Tk()
@@ -193,7 +168,7 @@ fail_text = Label(login_f, text = "\n", font = (Font_2, 10, "italic"), anchor = 
 fail_text.config(fg = "red")
 fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
 
-
+# Login button
 login_submit = Button(login_f,
                       text = "Sign In", 
                       command = login_attempt, 
@@ -206,6 +181,8 @@ login_submit = Button(login_f,
                       cursor = "hand2"
                       )
 login_submit.grid(row = 6, column = 0, sticky = W+E+N+S)
+
+#Border for create new account button
 button_border = tkinter.Frame(login_f,
                               highlightbackground = Contrast,
                               highlightthickness = 5,
@@ -213,6 +190,7 @@ button_border = tkinter.Frame(login_f,
                               bg = "White",
                               height = 20,
                               )
+#Create new account button
 new_account = Button(button_border, 
                      text = "Create Account", 
                      command = create_account_window, 
@@ -233,13 +211,11 @@ button_border.grid(row = 7, column = 0, sticky = W+E+N+S, pady = "10")
 login_f.pack(fill = "y", expand = True)
 login.mainloop()
 
-
-
-
+#Establishes sounds for correct and incorrect song guesses
 correct = pygame.mixer.Sound('Correct.mp3')
 incorrect = pygame.mixer.Sound('Incorrect.mp3')
 
-path = ""
+path = "" # Makes path NULL so things can be added to it without error
 
 def pick_song():
     global username, total_points, path, song_play
@@ -247,35 +223,24 @@ def pick_song():
     cursor.execute("SELECT COUNT(*) FROM Songs")
     item_count = int(cursor.fetchone()[0]) 
     song_choice = random.randint(1,item_count)
-
-# DEBUG -- print(song_choice)
     
     cursor.execute("SELECT Title FROM Songs WHERE rowid =:c", {"c": song_choice})
     song = cursor.fetchone()[0]
-
-# DEBUG -- print(song)
     
     cursor.execute("SELECT Artist FROM Songs WHERE rowid =:c", {"c": song_choice})
     artist = cursor.fetchone()[0]
     
     #assemble string with only first letters
     words = song.split()
-    # DEBUG -- print(words)
     string = ""
     for word in words:
         letter = word[0]
         letters = len(word)
-        # DEBUG -- print(letters)
         for x in range(1,letters):
             letter = letter + " _"
         string = string + letter + "  "
-        # DEBUG -- print(string)
-
-# DEBUG -- print(artist)
-
-    #print(string)
-    #print(artist)  
-
+        
+    #Puts song info into window
     user = Label(title, text = username, font = (Font_1, 15, "italic"), anchor = "w", padx = 10,pady = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
     user.grid(row = 0, column = 0, sticky = W+E+N+S)
     
@@ -291,11 +256,12 @@ def pick_song():
     row_2 = Label(title, text = (artist + "                              "), font = (Font_2, 15), anchor = "nw",wrap=True, wraplength=505, bg = Background)
     row_2.grid(row = 2, column = 1, columnspan = 2, sticky = N+W)
             
-
+    #Creates path for song clip then plays
     path = "Songs/" + str(song_choice) + "/Aud.mp3"
     song_play = pygame.mixer.Sound(path)
     song_play.play()
     
+    #Creates path for album cover
     cover_path = "Songs/" + str(song_choice) + "/Cvr.png"
     cover = Image.open(cover_path).resize((100,100))
     image_cover = ImageTk.PhotoImage(cover)
@@ -303,16 +269,13 @@ def pick_song():
     
     ins_cover.image = image_cover
 
+    #Inserts album cover into window
     ins_cover.grid(row = 1, rowspan = 2, column = 0, sticky = "nesw", pady = 10, padx =10)
-    title.pack_forget()
     title.pack(fill = "both", expand = True,  anchor="w")
     
-    box.delete(0, END)
-
+    box.delete(0, END) #Clears entry widget
+    
     return(song)
-
-#Playing check
-playing = True
 
 points = 0
 
@@ -423,14 +386,14 @@ def session_lead():
     title.pack_forget()
     all_time_label_table.pack_forget()
 
-#Window
+#Make Window
 root = Tk()
 root.geometry("750x275")
 root.config(bg = Background)
 root.title("Song Guesser - Version 0.4.1 - 08/06/2024")
 root.minsize(width = 750, height = 275)
 
-#Menu
+#Make Top Menu
 my_menu = Menu(root)
 root.config(menu=my_menu)
 
@@ -443,7 +406,7 @@ leaderboard_menus.add_command(label = "All Time Scores", command = all_time_lead
 leaderboard_menus.add_command(label = "Session Scores", command = session_lead)
 
 
-#Frame
+#Make Frame For Main Play Page
 title = Frame(root, width = 750, height = 270)
 title.config(bg = "White")
 title.rowconfigure(0, weight = 1)
@@ -457,7 +420,7 @@ title.columnconfigure(1, weight = 1000)
 title.columnconfigure(2, weight = 200)
 
 
-#Top 5 All Time Table
+#Make Top 5 All Time Table
 all_time_table = Frame(root, width = 750)
 all_time_table.rowconfigure(0, weight = 1)
 all_time_table.rowconfigure(1, weight = 1)
@@ -470,7 +433,7 @@ all_time_table.columnconfigure(1, weight = 7)
 all_time_table.columnconfigure(2, weight = 1)
 
 
-#Top 5 Session Table
+#Make Top 5 Session Table
 session_table = Frame(root)
 session_table.rowconfigure(0, weight = 1)
 session_table.rowconfigure(1, weight = 1)
@@ -493,28 +456,19 @@ all_time_label = Label(all_time_label_table, text = "Top 5 All Time Scores", fon
 all_time_label.grid(row = 0, column = 0, sticky = W+E+N+S)
 
 
-#Imports
+#Prepare to import songs
 data = sqlite3.connect("Songs.db")
 cursor = data.cursor()
 
 cursor.execute("SELECT Title FROM Songs")
 songs = cursor.fetchall()
 
-# DEBUG -- print(songs)
-
-#print()
-
 cursor.execute("SELECT Artist FROM Songs")
 artists = cursor.fetchall()
 
-# DEGUG -- print(artist)
-
 guess = 0
 
-def pick_song_wait():
-    global song
-    song = pick_song()
-
+#Function for submitting song guess
 def submit(event=None):
     global username, password, total_points, top_session_points, signed_in, points, guess, song, total_points, first_loop,title
 
@@ -522,83 +476,73 @@ def submit(event=None):
       
     choice = box.get()    
 
-    if guess < 3:
-        if choice.upper() == song.upper():
-            #print("That Is Correct! Well Done!")
+    if guess < 3: # Makes sure user has guesses left on song
+        if choice.upper() == song.upper(): # Checks if song guess is correct
             correct.play()
             points = points + (4-guess)
             total_points = total_points + (4-guess)
-                
-            if signed_in == True:
-                user_cursor.execute("DELETE FROM Users WHERE Username = ?", (username, ))
                     
-                if points > top_session_points:
-                    top_session_points = points
+            if points > top_session_points: # Checks if current session points is user record, if so, makes top session points = current points so updated in db
+                top_session_points = points
                 
-                    user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, total_points, top_session_points))
+            if signed_in == True: # Checks if user is signed in to save data then deletes old user data to prevent duplicated accounts then saves new data
+                user_cursor.execute("DELETE FROM Users WHERE Username = ?", (username, ))
+                
+                user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, total_points, top_session_points))
     
-                    users.commit()
+                users.commit()
 
-            #print("Session Points: " + str(points))
             song_play.stop()
             song = pick_song()
             guess = 0
-        else:
+            
+        else: # Plays if guess is incorrect
             incorrect.play()
             song_play.stop()
             song_play.play()
-    else:
-        if choice.upper() == song.upper():
-            #print("That Is Correct! Well Done!")
+            
+    else: # Plays if user is on final guess
+        if choice.upper() == song.upper(): # Checks if song guess is correct
             correct.play()
             points = points + (4-guess)
             total_points = total_points + (4-guess)
-            
-            if signed_in == True:
-                user_cursor.execute("DELETE FROM Users WHERE Username = ?", (username, ))
                 
-            if points > top_session_points:
+            if points > top_session_points: # checks if session points is record
                 top_session_points = points
+                
+            if signed_in == True: # Checks if user is signed in to save data then deletes old user data to prevent duplicated accounts
+                user_cursor.execute("DELETE FROM Users WHERE Username = ?", (username, ))
             
                 user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, total_points, top_session_points))
     
                 users.commit()
 
-            #print("Session Points: " + str(points))
             song_play.stop()
             song = pick_song()
             guess = 0
             
-        else:
+        else: # Plays if guess is incorrect on last guess (picks new song)
             incorrect.play()
             song_play.stop()
             
-            print(song)
-            song_label = Label(title, text = song, font = (Font_1, 25, "bold"), anchor = "w", wrap=True, wraplength=505, justify="left", bg = Background, fg = "Red")
+            song_label = Label(title, text = song, font = (Font_1, 25, "bold"), anchor = "w", wrap=True, wraplength=505, justify="left", bg = Background, fg = "Red") # Puts correct song on screen
             song_label.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
             title.pack_forget()
             title.pack(fill = "both", expand = True,  anchor="w")
             guess = 0
-            title.after(3000, lambda: pick_song_wait())           
+            title.after(3000, lambda: pick_song())  # Waits before picking new song         
             
 
 
-
-
-
-while playing == True:
-    box = Entry(title, font = (Font_1, 27), width = 33, justify = "center", bg = Contrast_Light, border = 0)
-    box.grid(row = 3, columnspan = 3, sticky = W+E+N+S)
+box = Entry(title, font = (Font_1, 27), width = 33, justify = "center", bg = Contrast_Light, border = 0)
+box.grid(row = 3, columnspan = 3, sticky = W+E+N+S)
     
-    submit_btn = Button(title, text = "Submit Guess", command = submit, font = (Font_1, 20, "bold"), anchor = "center", justify = "center", bg = Contrast, fg = "White", border = 0)
-    submit_btn.grid(row = 4, columnspan = 3, sticky = W+E+N+S)
+submit_btn = Button(title, text = "Submit Guess", command = submit, font = (Font_1, 20, "bold"), anchor = "center", justify = "center", bg = Contrast, fg = "White", border = 0)
+submit_btn.grid(row = 4, columnspan = 3, sticky = W+E+N+S)
 
-    song = pick_song()    
+song = pick_song()    
 
-    box.bind("<Return>", submit)
+box.bind("<Return>", submit) # Makes enter button submit song
 
-    title.pack()
-    root.mainloop()
-
-            
-    #print(song)
+title.pack()
+root.mainloop()
