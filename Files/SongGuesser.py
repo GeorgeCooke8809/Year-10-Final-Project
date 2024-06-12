@@ -46,38 +46,6 @@ def login_attempt(): # Function for when login button is pressed
             fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
 
             login_f.pack(fill = "y", expand = True)
-
-def create_new_account(): # Function for making create new account
-    global username, password, signed_in, create_f, username_enter, password_enter, create_account
-    
-    username = username_enter.get()
-    password = password_enter.get()
-    
-    user_cursor.execute("SELECT Password FROM Users WHERE Username = ?", (username,))
-    correct_password = user_cursor.fetchone()
-    
-    if correct_password == None: # Checks username not already in use
-        
-        if password != "": # Checks password was entered
-            user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, "0", "0"))
-    
-            users.commit()
-        
-            create_account.destroy()
-            
-        else: # Fail message for if password not entered
-            fail_text = Label(create_f, text = "Please enter a password.\n", font = (Font_2, 10, "italic"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
-            fail_text.config(fg = "red")
-            fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
-
-            create_f.pack()
-            
-    else: # Fail message for if username in use
-        fail_text = Label(create_f, text = "That username already exists.\nPlease try again.", font = (Font_2, 10, "italic"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
-        fail_text.config(fg = "red")
-        fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
-
-        create_f.pack()
        
 def create_account_window():   # Function for making new account window
     global create_f, username_enter, password_enter, create_account    
@@ -126,65 +94,37 @@ def create_account_window():   # Function for making new account window
     create_f.pack(fill = "y", expand = True)
     create_account.mainloop()
 
-def pick_song():
-    global username, total_points, path, song_play
+def create_new_account(): # Function for making create new account
+    global username, password, signed_in, create_f, username_enter, password_enter, create_account
     
-    cursor.execute("SELECT COUNT(*) FROM Songs")
-    item_count = int(cursor.fetchone()[0]) 
-    song_choice = random.randint(1,item_count)
+    username = username_enter.get()
+    password = password_enter.get()
     
-    cursor.execute("SELECT Title FROM Songs WHERE rowid =:c", {"c": song_choice})
-    song = cursor.fetchone()[0]
+    user_cursor.execute("SELECT Password FROM Users WHERE Username = ?", (username,))
+    correct_password = user_cursor.fetchone()
     
-    cursor.execute("SELECT Artist FROM Songs WHERE rowid =:c", {"c": song_choice})
-    artist = cursor.fetchone()[0]
-    
-    #assemble string with only first letters
-    words = song.split()
-    string = ""
-    for word in words:
-        letter = word[0]
-        letters = len(word)
-        for x in range(1,letters):
-            letter = letter + " _"
-        string = string + letter + "  "
+    if correct_password == None: # Checks username not already in use
         
-    #Puts song info into window
-    user = Label(title, text = username, font = (Font_1, 15, "italic"), anchor = "w", padx = 10,pady = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    user.grid(row = 0, column = 0, sticky = W+E+N+S)
+        if password != "": # Checks password was entered
+            user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, "0", "0"))
     
-    total = Label(title, text = total_points, font = (Font_1, 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    total.grid(row = 0, column = 1, sticky = W+E+N+S)
-    
-    row_points = Label(title, text = points, font = (Font_1, 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    row_points.grid(row = 0, column = 2, sticky = W+E+N+S)
-
-    song_label = Label(title, text = string, font = (Font_1, 25, "bold"), anchor = "w", wrap=True, wraplength=505, justify="left", bg = Background, fg = "Black")
-    song_label.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
-    
-    row_2 = Label(title, text = (artist + "                              "), font = (Font_2, 15), anchor = "nw",wrap=True, wraplength=505, bg = Background)
-    row_2.grid(row = 2, column = 1, columnspan = 2, sticky = N+W)
+            users.commit()
+        
+            create_account.destroy()
             
-    #Creates path for song clip then plays
-    path = "Songs/" + str(song_choice) + "/Aud.mp3"
-    song_play = pygame.mixer.Sound(path)
-    song_play.play()
-    
-    #Creates path for album cover
-    cover_path = "Songs/" + str(song_choice) + "/Cvr.png"
-    cover = Image.open(cover_path).resize((100,100))
-    image_cover = ImageTk.PhotoImage(cover)
-    ins_cover = Label(title, image = image_cover, pady = 10, padx = 10, bg = Background)
-    
-    ins_cover.image = image_cover
+        else: # Fail message for if password not entered
+            fail_text = Label(create_f, text = "Please enter a password.\n", font = (Font_2, 10, "italic"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+            fail_text.config(fg = "red")
+            fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
 
-    #Inserts album cover into window
-    ins_cover.grid(row = 1, rowspan = 2, column = 0, sticky = "nesw", pady = 10, padx =10)
-    title.pack(fill = "both", expand = True,  anchor="w")
-    
-    box.delete(0, END) #Clears entry widget
-    
-    return(song)
+            create_f.pack()
+            
+    else: # Fail message for if username in use
+        fail_text = Label(create_f, text = "That username already exists.\nPlease try again.", font = (Font_2, 10, "italic"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+        fail_text.config(fg = "red")
+        fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
+
+        create_f.pack()
 
 def play(): # Function for when player switches to play tab in menu
     title.pack(fill = "both", expand = True,  anchor="w")
@@ -292,6 +232,66 @@ def session_lead(): # Function for when player switches to session leader board 
     all_time_table.pack_forget()
     title.pack_forget()
     all_time_label_table.pack_forget()
+
+def pick_song():
+    global username, total_points, path, song_play
+    
+    cursor.execute("SELECT COUNT(*) FROM Songs")
+    item_count = int(cursor.fetchone()[0]) 
+    song_choice = random.randint(1,item_count)
+    
+    cursor.execute("SELECT Title FROM Songs WHERE rowid =:c", {"c": song_choice})
+    song = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT Artist FROM Songs WHERE rowid =:c", {"c": song_choice})
+    artist = cursor.fetchone()[0]
+    
+    #assemble string with only first letters
+    words = song.split()
+    string = ""
+    for word in words:
+        letter = word[0]
+        letters = len(word)
+        for x in range(1,letters):
+            letter = letter + " _"
+        string = string + letter + "  "
+        
+    #Puts song info into window
+    user = Label(title, text = username, font = (Font_1, 15, "italic"), anchor = "w", padx = 10,pady = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    user.grid(row = 0, column = 0, sticky = W+E+N+S)
+    
+    total = Label(title, text = total_points, font = (Font_1, 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    total.grid(row = 0, column = 1, sticky = W+E+N+S)
+    
+    row_points = Label(title, text = points, font = (Font_1, 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    row_points.grid(row = 0, column = 2, sticky = W+E+N+S)
+
+    song_label = Label(title, text = string, font = (Font_1, 25, "bold"), anchor = "w", wrap=True, wraplength=505, justify="left", bg = Background, fg = "Black")
+    song_label.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
+    
+    row_2 = Label(title, text = (artist + "                              "), font = (Font_2, 15), anchor = "nw",wrap=True, wraplength=505, bg = Background)
+    row_2.grid(row = 2, column = 1, columnspan = 2, sticky = N+W)
+            
+    #Creates path for song clip then plays
+    path = "Songs/" + str(song_choice) + "/Aud.mp3"
+    song_play = pygame.mixer.Sound(path)
+    song_play.play()
+    
+    #Creates path for album cover
+    cover_path = "Songs/" + str(song_choice) + "/Cvr.png"
+    cover = Image.open(cover_path).resize((100,100))
+    image_cover = ImageTk.PhotoImage(cover)
+    ins_cover = Label(title, image = image_cover, pady = 10, padx = 10, bg = Background)
+    
+    ins_cover.image = image_cover
+
+    #Inserts album cover into window
+    ins_cover.grid(row = 1, rowspan = 2, column = 0, sticky = "nesw", pady = 10, padx =10)
+    title.pack(fill = "both", expand = True,  anchor="w")
+    
+    box.delete(0, END) #Clears entry widget
+    
+    return(song)
 
 #Function for submitting song guess
 def submit(event=None):
