@@ -271,7 +271,7 @@ def pick_song():
     song_label = Label(title, text = string, font = (Font_1, 25, "bold"), anchor = "w", wrap=True, wraplength=505, justify="left", bg = Background, fg = "Black")
     song_label.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
     
-    row_2 = Label(title, text = (artist + "                              "), font = (Font_2, 15), anchor = "nw",wrap=True, wraplength=505, bg = Background)
+    row_2 = Label(title, text = (artist + "                                         "), font = (Font_2, 15), anchor = "nw",wrap=True, wraplength=505, bg = Background)
     row_2.grid(row = 2, column = 1, columnspan = 2, sticky = N+W)
             
     #Creates path for song clip then plays
