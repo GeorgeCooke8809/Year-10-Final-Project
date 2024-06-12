@@ -48,51 +48,53 @@ def login_attempt(): # Function for when login button is pressed
             login_f.pack(fill = "y", expand = True)
        
 def create_account_window():   # Function for making new account window
-    global create_f, username_enter, password_enter, create_account    
+    global create_f, username_enter, password_enter, create_account, signing_up    
+    if signing_up == False:
+        signing_up = True
 
-    create_account =Tk()
-    create_account.geometry("320x430")
-    create_account.title("Create Account")
-    create_account.resizable(height = False, width = False)
+        create_account =Tk()
+        create_account.geometry("320x430")
+        create_account.title("Create Account")
+        create_account.resizable(height = False, width = False)
 
-    create_f = Frame(create_account)
-    create_f.rowconfigure(0, weight = 1)
-    create_f.rowconfigure(2, weight = 1)
-    create_f.rowconfigure(3, weight = 1)
-    create_f.rowconfigure(4, weight = 1)
-    create_f.rowconfigure(5, weight = 150, minsize = 50)
-    create_f.rowconfigure(6, weight = 1)
-    create_f.rowconfigure(7, weight = 500, minsize = 50)
+        create_f = Frame(create_account)
+        create_f.rowconfigure(0, weight = 1)
+        create_f.rowconfigure(2, weight = 1)
+        create_f.rowconfigure(3, weight = 1)
+        create_f.rowconfigure(4, weight = 1)
+        create_f.rowconfigure(5, weight = 150, minsize = 50)
+        create_f.rowconfigure(6, weight = 1)
+        create_f.rowconfigure(7, weight = 500, minsize = 50)
 
-    login_text = Label(create_f, text = "Sign Up", font = (Font_1, 35, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
-    login_text.grid(row = 0, column = 0, sticky = W+E+N+S,pady = "10")
-    username_text = Label(create_f, text = "Username:", font = (Font_2, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
-    username_text.grid(row = 1, column = 0, sticky = W+E+N+S, pady = "10")
-    username_enter = Entry(create_f, font = (Font_2, 15))
-    username_enter.grid(row = 2, column = 0, sticky = W+E+N+S)
-    password_text = Label(create_f, text = "Password:", font = (Font_2, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
-    password_text.grid(row = 3, column = 0, sticky = W+E+N+S, pady = "10")
-    password_enter = Entry(create_f, font = (Font_2, 15))
-    password_enter.grid(row = 4, column = 0, sticky = W+E+N+S)
-    fail_text = Label(create_f, text = "\n", font = (Font_2, 10, "italic"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
-    fail_text.config(fg = "red")
-    fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
+        login_text = Label(create_f, text = "Sign Up", font = (Font_1, 35, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+        login_text.grid(row = 0, column = 0, sticky = W+E+N+S,pady = "10")
+        username_text = Label(create_f, text = "Username:", font = (Font_2, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+        username_text.grid(row = 1, column = 0, sticky = W+E+N+S, pady = "10")
+        username_enter = Entry(create_f, font = (Font_2, 15))
+        username_enter.grid(row = 2, column = 0, sticky = W+E+N+S)
+        password_text = Label(create_f, text = "Password:", font = (Font_2, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+        password_text.grid(row = 3, column = 0, sticky = W+E+N+S, pady = "10")
+        password_enter = Entry(create_f, font = (Font_2, 15))
+        password_enter.grid(row = 4, column = 0, sticky = W+E+N+S)
+        fail_text = Label(create_f, text = "\n", font = (Font_2, 10, "italic"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center")
+        fail_text.config(fg = "red")
+        fail_text.grid(row = 5, column = 0, sticky = W+E+N+S,pady = "10")
     
-    create_account_submit = Button(create_f,
-                        text = "Sign Up", 
-                        command = create_new_account, 
-                        font = (Font_2, 17), 
-                        background = Contrast,
-                        fg = "White",
-                        activebackground = Contrast_Light,
-                        pady = "10",
-                        border = 0,
-                        cursor = "hand2"
-                        )
-    create_account_submit.grid(row = 6, column = 0, sticky = W+E+N+S, pady = "10")
+        create_account_submit = Button(create_f,
+                            text = "Sign Up", 
+                            command = create_new_account, 
+                            font = (Font_2, 17), 
+                            background = Contrast,
+                            fg = "White",
+                            activebackground = Contrast_Light,
+                            pady = "10",
+                            border = 0,
+                            cursor = "hand2"
+                            )
+        create_account_submit.grid(row = 6, column = 0, sticky = W+E+N+S, pady = "10")
 
-    create_f.pack(fill = "y", expand = True)
-    create_account.mainloop()
+        create_f.pack(fill = "y", expand = True)
+        create_account.mainloop()
 
 def create_new_account(): # Function for making create new account
     global username, password, signed_in, create_f, username_enter, password_enter, create_account
@@ -269,7 +271,7 @@ def pick_song():
     song_label = Label(title, text = string, font = (Font_1, 25, "bold"), anchor = "w", wrap=True, wraplength=505, justify="left", bg = Background, fg = "Black")
     song_label.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
     
-    row_2 = Label(title, text = (artist + "                              "), font = (Font_2, 15), anchor = "nw",wrap=True, wraplength=505, bg = Background)
+    row_2 = Label(title, text = (artist + "                                         "), font = (Font_2, 15), anchor = "nw",wrap=True, wraplength=505, bg = Background)
     row_2.grid(row = 2, column = 1, columnspan = 2, sticky = N+W)
             
     #Creates path for song clip then plays
@@ -440,6 +442,9 @@ new_account.pack(anchor = "center")
 button_border.grid(row = 7, column = 0, sticky = W+E+N+S, pady = "10")
 
 login_f.pack(fill = "y", expand = True)
+
+signing_up = False
+
 login.mainloop()
 
 

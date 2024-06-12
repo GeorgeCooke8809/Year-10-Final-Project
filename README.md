@@ -27,3 +27,25 @@ Songs Inlcuded (In The Order They Were Added):
 - Video Games, Lana Del Rey,
 - Intro, The xx,
 - I'm So Tired, Fugazi
+- Monsters, All time Low
+- Ocean, Elsa & Emilie
+- Hooked On A Feeling, Blue Swede
+- chance with you, mehro
+- Home, Dotan
+- Take Me Out, Franz Ferdinand
+- Flaws, Bastile
+- Good Grief, Bastile
+- The Code, Nemo
+- Yellow, Coldplay
+- Changing, Sigma
+- Let It All Go, Birdy
+- Charlie Brown, Coldplay
+- Wonderful Life, Smith & Burrows
+- Freaks, Surf Curse
+- Welcome Home, Son, Radical Face
+- Your Mind Is Not Your Friend, The National
+- Somebody Told Me, The Killers
+- Can't Catch Me now, Olivia Rodrigo
+- Outro, M83
+- Mr. brightside, The Killers
+- Midnight City, M83
