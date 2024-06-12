@@ -17,16 +17,7 @@ Background = "White"
 Contrast = "#01104d"
 Contrast_Light = "#bfd2ff"
 
-#Sets variables to default incase user logs in as a guest
-signed_in = False
-username = "Guest"
-total_points = 0
-top_session_points = 0
-
-#Readies SQL for user data
-users = sqlite3.connect("Users.db")
-user_cursor = users.cursor()
-
+#Functions:
 def login_attempt(): # Function for when login button is pressed
     global signed_in, username, total_points, top_session_points, password
     username = username_enter_login.get()
@@ -135,6 +126,246 @@ def create_account_window():   # Function for making new account window
     create_f.pack(fill = "y", expand = True)
     create_account.mainloop()
 
+def pick_song():
+    global username, total_points, path, song_play
+    
+    cursor.execute("SELECT COUNT(*) FROM Songs")
+    item_count = int(cursor.fetchone()[0]) 
+    song_choice = random.randint(1,item_count)
+    
+    cursor.execute("SELECT Title FROM Songs WHERE rowid =:c", {"c": song_choice})
+    song = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT Artist FROM Songs WHERE rowid =:c", {"c": song_choice})
+    artist = cursor.fetchone()[0]
+    
+    #assemble string with only first letters
+    words = song.split()
+    string = ""
+    for word in words:
+        letter = word[0]
+        letters = len(word)
+        for x in range(1,letters):
+            letter = letter + " _"
+        string = string + letter + "  "
+        
+    #Puts song info into window
+    user = Label(title, text = username, font = (Font_1, 15, "italic"), anchor = "w", padx = 10,pady = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    user.grid(row = 0, column = 0, sticky = W+E+N+S)
+    
+    total = Label(title, text = total_points, font = (Font_1, 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    total.grid(row = 0, column = 1, sticky = W+E+N+S)
+    
+    row_points = Label(title, text = points, font = (Font_1, 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    row_points.grid(row = 0, column = 2, sticky = W+E+N+S)
+
+    song_label = Label(title, text = string, font = (Font_1, 25, "bold"), anchor = "w", wrap=True, wraplength=505, justify="left", bg = Background, fg = "Black")
+    song_label.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
+    
+    row_2 = Label(title, text = (artist + "                              "), font = (Font_2, 15), anchor = "nw",wrap=True, wraplength=505, bg = Background)
+    row_2.grid(row = 2, column = 1, columnspan = 2, sticky = N+W)
+            
+    #Creates path for song clip then plays
+    path = "Songs/" + str(song_choice) + "/Aud.mp3"
+    song_play = pygame.mixer.Sound(path)
+    song_play.play()
+    
+    #Creates path for album cover
+    cover_path = "Songs/" + str(song_choice) + "/Cvr.png"
+    cover = Image.open(cover_path).resize((100,100))
+    image_cover = ImageTk.PhotoImage(cover)
+    ins_cover = Label(title, image = image_cover, pady = 10, padx = 10, bg = Background)
+    
+    ins_cover.image = image_cover
+
+    #Inserts album cover into window
+    ins_cover.grid(row = 1, rowspan = 2, column = 0, sticky = "nesw", pady = 10, padx =10)
+    title.pack(fill = "both", expand = True,  anchor="w")
+    
+    box.delete(0, END) #Clears entry widget
+    
+    return(song)
+
+def play(): # Function for when player switches to play tab in menu
+    title.pack(fill = "both", expand = True,  anchor="w")
+    all_time_table.pack_forget()
+    session_table.pack_forget()
+    session_label_table.pack_forget()
+    all_time_label_table.pack_forget()
+    song_play.play()
+
+def all_time_lead(): # Function for when player switches to all time leader board in menu
+    song_play.stop()    
+
+    user_cursor.execute("SELECT Username FROM Users ORDER BY AllTimeScore DESC LIMIT 5")
+    top_5_all_name = user_cursor.fetchall()
+    user_cursor.execute("SELECT AllTimeScore FROM Users ORDER BY AllTimeScore DESC LIMIT 5")
+    top_5_all_score = user_cursor.fetchall()    
+
+    number_one = Label(all_time_table, text = "1st", font = (Font_1, 25, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    number_one.grid(row = 0, column = 0, sticky = W+E+N+S)
+    name_one = Label(all_time_table, text = top_5_all_name[0], font = (Font_1, 25, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
+    name_one.grid(row = 0, column = 1, sticky = W+E+N+S)
+    score_one = Label(all_time_table, text = top_5_all_score[0], font = (Font_1, 25, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    score_one.grid(row = 0, column = 2, sticky = W+E+N+S)
+
+    number_two = Label(all_time_table, text = "2nd", font = (Font_1, 20, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    number_two.grid(row = 1, column = 0, sticky = W+E+N+S)
+    name_two = Label(all_time_table, text = top_5_all_name[1], font = (Font_1, 20, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
+    name_two.grid(row = 1, column = 1, sticky = W+E+N+S)
+    score_two = Label(all_time_table, text = top_5_all_score[1], font = (Font_1, 20, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    score_two.grid(row = 1, column = 2, sticky = W+E+N+S)
+
+    number_three = Label(all_time_table, text = "3rd", font = (Font_1, 15, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    number_three.grid(row = 2, column = 0, sticky = W+E+N+S)
+    name_three = Label(all_time_table, text = top_5_all_name[2], font = (Font_1, 15, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
+    name_three.grid(row = 2, column = 1, sticky = W+E+N+S)
+    score_three = Label(all_time_table, text = top_5_all_score[2], font = (Font_1, 15, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    score_three.grid(row = 2, column = 2, sticky = W+E+N+S)
+
+    number_four = Label(all_time_table, text = "4th", font = (Font_1, 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    number_four.grid(row = 3, column = 0, sticky = W+E+N+S)
+    name_four = Label(all_time_table, text = top_5_all_name[3], font = (Font_1, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
+    name_four.grid(row = 3, column = 1, sticky = W+E+N+S)
+    score_four = Label(all_time_table, text = top_5_all_score[3], font = (Font_1, 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    score_four.grid(row = 3, column = 2, sticky = W+E+N+S)
+
+    number_five = Label(all_time_table, text = "5th", font = (Font_1, 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    number_five.grid(row = 4, column = 0, sticky = W+E+N+S)
+    name_five = Label(all_time_table, text = top_5_all_name[4], font = (Font_1, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
+    name_five.grid(row = 4, column = 1, sticky = W+E+N+S)
+    score_five = Label(all_time_table, text = top_5_all_score[4], font = (Font_1, 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    score_five.grid(row = 4, column = 2, sticky = W+E+N+S)    
+
+    all_time_label_table.pack()
+    all_time_table.pack(fill = "x", expand = True, pady = 10,  anchor="nw")
+    session_table.pack_forget()
+    title.pack_forget()
+    session_label_table.pack_forget()
+
+def session_lead(): # Function for when player switches to session leader board in menu
+    song_play.stop()    
+
+    user_cursor.execute("SELECT Username FROM Users ORDER BY TopSessionScore DESC LIMIT 5")
+    top_5_session_names = user_cursor.fetchall()
+    user_cursor.execute("SELECT TopSessionScore FROM Users ORDER BY TopSessionScore DESC LIMIT 5")
+    top_5_session_score = user_cursor.fetchall()
+
+
+    number_one = Label(session_table, text = "1st", font = (Font_1, 25, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    number_one.grid(row = 0, column = 0, sticky = W+E+N+S)
+    name_one = Label(session_table, text = top_5_session_names[0], font = (Font_1, 25, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
+    name_one.grid(row = 0, column = 1, sticky = W+E+N+S)
+    score_one = Label(session_table, text = top_5_session_score[0], font = (Font_1, 25, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    score_one.grid(row = 0, column = 2, sticky = W+E+N+S)
+
+    number_two = Label(session_table, text = "2nd", font = (Font_1, 20, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    number_two.grid(row = 1, column = 0, sticky = W+E+N+S)
+    name_two = Label(session_table, text = top_5_session_names[1], font = (Font_1, 20, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
+    name_two.grid(row = 1, column = 1, sticky = W+E+N+S)
+    score_two = Label(session_table, text = top_5_session_score[1], font = (Font_1, 20, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    score_two.grid(row = 1, column = 2, sticky = W+E+N+S)
+
+    number_three = Label(session_table, text = "3rd", font = (Font_1, 15, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    number_three.grid(row = 2, column = 0, sticky = W+E+N+S)
+    name_three = Label(session_table, text = top_5_session_names[2], font = (Font_1, 15, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
+    name_three.grid(row = 2, column = 1, sticky = W+E+N+S)
+    score_three = Label(session_table, text = top_5_session_score[2], font = (Font_1, 15, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    score_three.grid(row = 2, column = 2, sticky = W+E+N+S)
+
+    number_four = Label(session_table, text = "4th", font = (Font_1, 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    number_four.grid(row = 3, column = 0, sticky = W+E+N+S)
+    name_four = Label(session_table, text = top_5_session_names[3], font = (Font_1, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
+    name_four.grid(row = 3, column = 1, sticky = W+E+N+S)
+    score_four = Label(session_table, text = top_5_session_score[3], font = (Font_1, 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    score_four.grid(row = 3, column = 2, sticky = W+E+N+S)
+
+    number_five = Label(session_table, text = "5th", font = (Font_1, 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
+    number_five.grid(row = 4, column = 0, sticky = W+E+N+S)
+    name_five = Label(session_table, text = top_5_session_names[4], font = (Font_1, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
+    name_five.grid(row = 4, column = 1, sticky = W+E+N+S)
+    score_five = Label(session_table, text = top_5_session_score[4], font = (Font_1, 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
+    score_five.grid(row = 4, column = 2, sticky = W+E+N+S)    
+
+    session_label_table.pack()
+    session_table.pack(fill = "x", expand = True, pady = 10,  anchor="nw")
+    all_time_table.pack_forget()
+    title.pack_forget()
+    all_time_label_table.pack_forget()
+
+#Function for submitting song guess
+def submit(event=None):
+    global username, password, total_points, top_session_points, signed_in, points, guess, song, total_points, first_loop,title
+
+    guess = guess + 1
+      
+    choice = box.get()    
+
+    if guess < 3: # Makes sure user has guesses left on song
+        if choice.upper() == song.upper(): # Checks if song guess is correct
+            correct.play()
+            points = points + (4-guess)
+            total_points = total_points + (4-guess)
+                    
+            if points > top_session_points: # Checks if current session points is user record, if so, makes top session points = current points so updated in db
+                top_session_points = points
+                
+            if signed_in == True: # Checks if user is signed in to save data then deletes old user data to prevent duplicated accounts then saves new data
+                user_cursor.execute("DELETE FROM Users WHERE Username = ?", (username, ))
+                
+                user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, total_points, top_session_points))
+    
+                users.commit()
+
+            song_play.stop()
+            song = pick_song()
+            guess = 0
+            
+        else: # Plays if guess is incorrect
+            incorrect.play()
+            song_play.stop()
+            song_play.play()
+            
+    else: # Plays if user is on final guess
+        if choice.upper() == song.upper(): # Checks if song guess is correct
+            correct.play()
+            points = points + (4-guess)
+            total_points = total_points + (4-guess)
+                
+            if points > top_session_points: # checks if session points is record
+                top_session_points = points
+                
+            if signed_in == True: # Checks if user is signed in to save data then deletes old user data to prevent duplicated accounts
+                user_cursor.execute("DELETE FROM Users WHERE Username = ?", (username, ))
+            
+                user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, total_points, top_session_points))
+    
+                users.commit()
+
+            song_play.stop()
+            song = pick_song()
+            guess = 0
+            
+        else: # Plays if guess is incorrect on last guess (picks new song)
+            incorrect.play()
+            song_play.stop()
+            
+            song_label = Label(title, text = song, font = (Font_1, 25, "bold"), anchor = "w", wrap=True, wraplength=505, justify="left", bg = Background, fg = "Red") # Puts correct song on screen
+            song_label.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
+            title.pack_forget()
+            title.pack(fill = "both", expand = True,  anchor="w")
+            guess = 0
+            title.after(3000, lambda: pick_song())  # Waits before picking new song         
+            
+#Sets variables to default incase user logs in as a guest
+signed_in = False
+username = "Guest"
+total_points = 0
+top_session_points = 0
+
+#Readies SQL for user data
+users = sqlite3.connect("Users.db")
+user_cursor = users.cursor()
 
 #Make Login Window
 login = Tk()
@@ -211,180 +442,13 @@ button_border.grid(row = 7, column = 0, sticky = W+E+N+S, pady = "10")
 login_f.pack(fill = "y", expand = True)
 login.mainloop()
 
+
+
 #Establishes sounds for correct and incorrect song guesses
 correct = pygame.mixer.Sound('Correct.mp3')
 incorrect = pygame.mixer.Sound('Incorrect.mp3')
 
-path = "" # Makes path NULL so things can be added to it without error
 
-def pick_song():
-    global username, total_points, path, song_play
-    
-    cursor.execute("SELECT COUNT(*) FROM Songs")
-    item_count = int(cursor.fetchone()[0]) 
-    song_choice = random.randint(1,item_count)
-    
-    cursor.execute("SELECT Title FROM Songs WHERE rowid =:c", {"c": song_choice})
-    song = cursor.fetchone()[0]
-    
-    cursor.execute("SELECT Artist FROM Songs WHERE rowid =:c", {"c": song_choice})
-    artist = cursor.fetchone()[0]
-    
-    #assemble string with only first letters
-    words = song.split()
-    string = ""
-    for word in words:
-        letter = word[0]
-        letters = len(word)
-        for x in range(1,letters):
-            letter = letter + " _"
-        string = string + letter + "  "
-        
-    #Puts song info into window
-    user = Label(title, text = username, font = (Font_1, 15, "italic"), anchor = "w", padx = 10,pady = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    user.grid(row = 0, column = 0, sticky = W+E+N+S)
-    
-    total = Label(title, text = total_points, font = (Font_1, 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    total.grid(row = 0, column = 1, sticky = W+E+N+S)
-    
-    row_points = Label(title, text = points, font = (Font_1, 15, "italic"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    row_points.grid(row = 0, column = 2, sticky = W+E+N+S)
-
-    song_label = Label(title, text = string, font = (Font_1, 25, "bold"), anchor = "w", wrap=True, wraplength=505, justify="left", bg = Background, fg = "Black")
-    song_label.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
-    
-    row_2 = Label(title, text = (artist + "                              "), font = (Font_2, 15), anchor = "nw",wrap=True, wraplength=505, bg = Background)
-    row_2.grid(row = 2, column = 1, columnspan = 2, sticky = N+W)
-            
-    #Creates path for song clip then plays
-    path = "Songs/" + str(song_choice) + "/Aud.mp3"
-    song_play = pygame.mixer.Sound(path)
-    song_play.play()
-    
-    #Creates path for album cover
-    cover_path = "Songs/" + str(song_choice) + "/Cvr.png"
-    cover = Image.open(cover_path).resize((100,100))
-    image_cover = ImageTk.PhotoImage(cover)
-    ins_cover = Label(title, image = image_cover, pady = 10, padx = 10, bg = Background)
-    
-    ins_cover.image = image_cover
-
-    #Inserts album cover into window
-    ins_cover.grid(row = 1, rowspan = 2, column = 0, sticky = "nesw", pady = 10, padx =10)
-    title.pack(fill = "both", expand = True,  anchor="w")
-    
-    box.delete(0, END) #Clears entry widget
-    
-    return(song)
-
-points = 0
-
-def play():
-    title.pack(fill = "both", expand = True,  anchor="w")
-    all_time_table.pack_forget()
-    session_table.pack_forget()
-    session_label_table.pack_forget()
-    all_time_label_table.pack_forget()
-    song_play.play()
-
-def all_time_lead():
-    song_play.stop()    
-
-    user_cursor.execute("SELECT Username FROM Users ORDER BY AllTimeScore DESC LIMIT 5")
-    top_5_all_name = user_cursor.fetchall()
-    user_cursor.execute("SELECT AllTimeScore FROM Users ORDER BY AllTimeScore DESC LIMIT 5")
-    top_5_all_score = user_cursor.fetchall()    
-
-    number_one = Label(all_time_table, text = "1st", font = (Font_1, 25, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    number_one.grid(row = 0, column = 0, sticky = W+E+N+S)
-    name_one = Label(all_time_table, text = top_5_all_name[0], font = (Font_1, 25, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
-    name_one.grid(row = 0, column = 1, sticky = W+E+N+S)
-    score_one = Label(all_time_table, text = top_5_all_score[0], font = (Font_1, 25, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    score_one.grid(row = 0, column = 2, sticky = W+E+N+S)
-
-    number_two = Label(all_time_table, text = "2nd", font = (Font_1, 20, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    number_two.grid(row = 1, column = 0, sticky = W+E+N+S)
-    name_two = Label(all_time_table, text = top_5_all_name[1], font = (Font_1, 20, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
-    name_two.grid(row = 1, column = 1, sticky = W+E+N+S)
-    score_two = Label(all_time_table, text = top_5_all_score[1], font = (Font_1, 20, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    score_two.grid(row = 1, column = 2, sticky = W+E+N+S)
-
-    number_three = Label(all_time_table, text = "3rd", font = (Font_1, 15, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    number_three.grid(row = 2, column = 0, sticky = W+E+N+S)
-    name_three = Label(all_time_table, text = top_5_all_name[2], font = (Font_1, 15, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
-    name_three.grid(row = 2, column = 1, sticky = W+E+N+S)
-    score_three = Label(all_time_table, text = top_5_all_score[2], font = (Font_1, 15, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    score_three.grid(row = 2, column = 2, sticky = W+E+N+S)
-
-    number_four = Label(all_time_table, text = "4th", font = (Font_1, 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    number_four.grid(row = 3, column = 0, sticky = W+E+N+S)
-    name_four = Label(all_time_table, text = top_5_all_name[3], font = (Font_1, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
-    name_four.grid(row = 3, column = 1, sticky = W+E+N+S)
-    score_four = Label(all_time_table, text = top_5_all_score[3], font = (Font_1, 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    score_four.grid(row = 3, column = 2, sticky = W+E+N+S)
-
-    number_five = Label(all_time_table, text = "5th", font = (Font_1, 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    number_five.grid(row = 4, column = 0, sticky = W+E+N+S)
-    name_five = Label(all_time_table, text = top_5_all_name[4], font = (Font_1, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
-    name_five.grid(row = 4, column = 1, sticky = W+E+N+S)
-    score_five = Label(all_time_table, text = top_5_all_score[4], font = (Font_1, 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    score_five.grid(row = 4, column = 2, sticky = W+E+N+S)    
-
-    all_time_label_table.pack()
-    all_time_table.pack(fill = "x", expand = True, pady = 10,  anchor="nw")
-    session_table.pack_forget()
-    title.pack_forget()
-    session_label_table.pack_forget()
-
-def session_lead():
-    song_play.stop()    
-
-    user_cursor.execute("SELECT Username FROM Users ORDER BY TopSessionScore DESC LIMIT 5")
-    top_5_session_names = user_cursor.fetchall()
-    user_cursor.execute("SELECT TopSessionScore FROM Users ORDER BY TopSessionScore DESC LIMIT 5")
-    top_5_session_score = user_cursor.fetchall()
-
-
-    number_one = Label(session_table, text = "1st", font = (Font_1, 25, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    number_one.grid(row = 0, column = 0, sticky = W+E+N+S)
-    name_one = Label(session_table, text = top_5_session_names[0], font = (Font_1, 25, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
-    name_one.grid(row = 0, column = 1, sticky = W+E+N+S)
-    score_one = Label(session_table, text = top_5_session_score[0], font = (Font_1, 25, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    score_one.grid(row = 0, column = 2, sticky = W+E+N+S)
-
-    number_two = Label(session_table, text = "2nd", font = (Font_1, 20, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    number_two.grid(row = 1, column = 0, sticky = W+E+N+S)
-    name_two = Label(session_table, text = top_5_session_names[1], font = (Font_1, 20, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
-    name_two.grid(row = 1, column = 1, sticky = W+E+N+S)
-    score_two = Label(session_table, text = top_5_session_score[1], font = (Font_1, 20, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    score_two.grid(row = 1, column = 2, sticky = W+E+N+S)
-
-    number_three = Label(session_table, text = "3rd", font = (Font_1, 15, "bold"), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    number_three.grid(row = 2, column = 0, sticky = W+E+N+S)
-    name_three = Label(session_table, text = top_5_session_names[2], font = (Font_1, 15, "bold"), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
-    name_three.grid(row = 2, column = 1, sticky = W+E+N+S)
-    score_three = Label(session_table, text = top_5_session_score[2], font = (Font_1, 15, "bold"), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    score_three.grid(row = 2, column = 2, sticky = W+E+N+S)
-
-    number_four = Label(session_table, text = "4th", font = (Font_1, 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    number_four.grid(row = 3, column = 0, sticky = W+E+N+S)
-    name_four = Label(session_table, text = top_5_session_names[3], font = (Font_1, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
-    name_four.grid(row = 3, column = 1, sticky = W+E+N+S)
-    score_four = Label(session_table, text = top_5_session_score[3], font = (Font_1, 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    score_four.grid(row = 3, column = 2, sticky = W+E+N+S)
-
-    number_five = Label(session_table, text = "5th", font = (Font_1, 15), anchor = "w", padx = 10, wrap=True, wraplength=505, justify = "left", bg = Background)
-    number_five.grid(row = 4, column = 0, sticky = W+E+N+S)
-    name_five = Label(session_table, text = top_5_session_names[4], font = (Font_1, 15), anchor = "center", padx = 10, wrap=True, wraplength=505, justify = "center", bg = Background)
-    name_five.grid(row = 4, column = 1, sticky = W+E+N+S)
-    score_five = Label(session_table, text = top_5_session_score[4], font = (Font_1, 15), anchor = "e", padx = 10, wrap=True, wraplength=505, justify = "right", bg = Background)
-    score_five.grid(row = 4, column = 2, sticky = W+E+N+S)    
-
-    session_label_table.pack()
-    session_table.pack(fill = "x", expand = True, pady = 10,  anchor="nw")
-    all_time_table.pack_forget()
-    title.pack_forget()
-    all_time_label_table.pack_forget()
 
 #Make Window
 root = Tk()
@@ -466,80 +530,16 @@ songs = cursor.fetchall()
 cursor.execute("SELECT Artist FROM Songs")
 artists = cursor.fetchall()
 
-guess = 0
-
-#Function for submitting song guess
-def submit(event=None):
-    global username, password, total_points, top_session_points, signed_in, points, guess, song, total_points, first_loop,title
-
-    guess = guess + 1
-      
-    choice = box.get()    
-
-    if guess < 3: # Makes sure user has guesses left on song
-        if choice.upper() == song.upper(): # Checks if song guess is correct
-            correct.play()
-            points = points + (4-guess)
-            total_points = total_points + (4-guess)
-                    
-            if points > top_session_points: # Checks if current session points is user record, if so, makes top session points = current points so updated in db
-                top_session_points = points
-                
-            if signed_in == True: # Checks if user is signed in to save data then deletes old user data to prevent duplicated accounts then saves new data
-                user_cursor.execute("DELETE FROM Users WHERE Username = ?", (username, ))
-                
-                user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, total_points, top_session_points))
-    
-                users.commit()
-
-            song_play.stop()
-            song = pick_song()
-            guess = 0
-            
-        else: # Plays if guess is incorrect
-            incorrect.play()
-            song_play.stop()
-            song_play.play()
-            
-    else: # Plays if user is on final guess
-        if choice.upper() == song.upper(): # Checks if song guess is correct
-            correct.play()
-            points = points + (4-guess)
-            total_points = total_points + (4-guess)
-                
-            if points > top_session_points: # checks if session points is record
-                top_session_points = points
-                
-            if signed_in == True: # Checks if user is signed in to save data then deletes old user data to prevent duplicated accounts
-                user_cursor.execute("DELETE FROM Users WHERE Username = ?", (username, ))
-            
-                user_cursor.execute("INSERT INTO Users VALUES (?, ?, ?, ?)", (username, password, total_points, top_session_points))
-    
-                users.commit()
-
-            song_play.stop()
-            song = pick_song()
-            guess = 0
-            
-        else: # Plays if guess is incorrect on last guess (picks new song)
-            incorrect.play()
-            song_play.stop()
-            
-            song_label = Label(title, text = song, font = (Font_1, 25, "bold"), anchor = "w", wrap=True, wraplength=505, justify="left", bg = Background, fg = "Red") # Puts correct song on screen
-            song_label.grid(row = 1, column = 1, columnspan = 2, sticky = W+E+N+S)
-            title.pack_forget()
-            title.pack(fill = "both", expand = True,  anchor="w")
-            guess = 0
-            title.after(3000, lambda: pick_song())  # Waits before picking new song         
-            
-
-
+#Entry box for songs guess
 box = Entry(title, font = (Font_1, 27), width = 33, justify = "center", bg = Contrast_Light, border = 0)
 box.grid(row = 3, columnspan = 3, sticky = W+E+N+S)
-    
+#Submit button for song guess
 submit_btn = Button(title, text = "Submit Guess", command = submit, font = (Font_1, 20, "bold"), anchor = "center", justify = "center", bg = Contrast, fg = "White", border = 0)
 submit_btn.grid(row = 4, columnspan = 3, sticky = W+E+N+S)
 
+path = "" # Makes path NULL so things can be added to it without error
+points = 0
+guess = 0
 song = pick_song()    
 
 box.bind("<Return>", submit) # Makes enter button submit song
