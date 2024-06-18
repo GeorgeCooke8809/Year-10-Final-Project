@@ -236,7 +236,7 @@ def session_lead(): # Function for when player switches to session leader board 
     all_time_label_table.pack_forget()
 
 def pick_song():
-    global username, total_points, path, song_play
+    global username, total_points, path, song_play,song
     
     cursor.execute("SELECT COUNT(*) FROM Songs")
     item_count = int(cursor.fetchone()[0]) 
@@ -293,7 +293,7 @@ def pick_song():
     
     box.delete(0, END) #Clears entry widget
     
-    return(song)
+    #return(song)
 
 #Function for submitting song guess
 def submit(event=None):
@@ -320,7 +320,7 @@ def submit(event=None):
                 users.commit()
 
             song_play.stop()
-            song = pick_song()
+            pick_song()
             guess = 0
             
         else: # Plays if guess is incorrect
@@ -345,7 +345,7 @@ def submit(event=None):
                 users.commit()
 
             song_play.stop()
-            song = pick_song()
+            pick_song()
             guess = 0
             
         else: # Plays if guess is incorrect on last guess (picks new song)
@@ -357,7 +357,7 @@ def submit(event=None):
             title.pack_forget()
             title.pack(fill = "both", expand = True,  anchor="w")
             guess = 0
-            title.after(3000, lambda: pick_song())  # Waits before picking new song         
+            title.after(3000, lambda:pick_song())# Waits before picking new song         
             
 #Sets variables to default incase user logs in as a guest
 signed_in = False
@@ -545,7 +545,7 @@ submit_btn.grid(row = 4, columnspan = 3, sticky = W+E+N+S)
 path = "" # Makes path NULL so things can be added to it without error
 points = 0
 guess = 0
-song = pick_song()    
+pick_song()    
 
 box.bind("<Return>", submit) # Makes enter button submit song
 
